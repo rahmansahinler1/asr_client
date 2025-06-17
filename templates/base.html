@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <!-- Bootstrap CSS - Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+    />
+    <!-- Your custom styles -->
+    <link rel="stylesheet" href="/css/custom.css" />
+    <!-- jQuery-->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Alpine.js -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"
+    ></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+    <!-- API  -->
+    <script src="/js/api.js"></script>
+  </head>
+  <body>
+    <!-- App Container -->
+    <div class="app-container">
+      
+      <!-- Sidebar -->
+      <div class="app-sidebar d-flex flex-column">
+        <!-- Sidebar Header with Logo -->
+        <div class="sidebar-header d-flex p-3 justify-content-start align-items-center" style="padding-left: 1rem; padding-bottom: 1rem;">
+          <button type="button" class="btn hover-btn text-start p-0">
+            <span class="logo-text">aisearchrefs</span>
+          </button>
+        </div>
+        
+        <!-- Navigation Sections -->
+        <div class="flex-grow-1">
+          <!-- Analytics Section -->
+          <div class="nav-section">
+            <h6 class="section-title text text-muted mb-2">Analytics</h6>
+            <a href="#" class="nav-item">
+              <i class="bi bi-graph-up nav-icon"></i>
+              <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="#" class="nav-item">
+              <i class="bi bi-bar-chart nav-icon"></i>
+              <span class="nav-text">Reports</span>
+            </a>
+            <a href="#" class="nav-item">
+              <i class="bi bi-eye nav-icon"></i>
+              <span class="nav-text">Brand Visibility</span>
+            </a>
+          </div>
+          
+          <!-- Management Section -->
+          <div class="nav-section">
+            <h6 class="section-title text text-muted mb-2">Management</h6>
+            <a href="#" class="nav-item">
+              <i class="bi bi-building nav-icon"></i>
+              <span class="nav-text">Brands</span>
+            </a>
+            <a href="#" class="nav-item">
+              <i class="bi bi-people nav-icon"></i>
+              <span class="nav-text">Competitors</span>
+            </a>
+            <a href="#" class="nav-item">
+              <i class="bi bi-gear nav-icon"></i>
+              <span class="nav-text">Settings</span>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Profile Section at Bottom -->
+        <div class="profile-section">
+          <button type="button" class="profile-button">
+            <i class="bi bi-person-circle fs-4 me-3" style="color: #5D5D5D;"></i>
+            <span class="profile-name">John Doe</span>
+            <i class="bi bi-chevron-down ms-auto" style="color: #5D5D5D; font-size: 0.9rem;"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="app-content">
+        <div class="container-fluid">
+          <h1 class="dashboard-title mb-3">Dashboard</h1>
+          <p class="nav-text text-muted">Welcome to your AI visibility analytics dashboard</p>
+        </div>
+      </div>
+      
+    </div>
+  </body>
+</html>

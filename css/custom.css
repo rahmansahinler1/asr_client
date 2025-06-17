@@ -1,0 +1,160 @@
+/* ================================
+   Layout Structure
+================================ */
+.app-container {
+    display: flex;
+}
+
+/* --------------------------------
+   Sidebar
+-------------------------------- */
+.app-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 248px;
+    height: 100vh;
+    background-color: #F9F9F9;
+    z-index: 1000;
+}
+
+.sidebar-header {
+    height: 72px;
+    padding-left: 1rem !important;
+}
+
+/* --------------------------------
+   Main Content (No Header)
+-------------------------------- */
+.app-content {
+    position: relative;
+    left: 248px;
+    width: calc(100% - 248px);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 24px;
+    background-color: #FFFFFF;
+}
+
+/* ================================
+   Typography & Text Styles
+================================ */
+.dashboard-title {
+    font-family: ui-sans-serif, -apple-system, system-ui;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.logo-text {
+    font-family: ui-sans-serif, -apple-system, system-ui;
+    font-size: 18px;
+    font-weight: 300;
+    color: #333;
+}
+
+.section-title {
+    font-family: ui-sans-serif, -apple-system, system-ui;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.nav-text {
+    font-family: ui-sans-serif, -apple-system, system-ui;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.nav-text-small {
+    font-family: ui-sans-serif, -apple-system, system-ui;
+    font-size: 12px;
+    font-weight: 300;
+}
+
+.profile-name {
+    font-family: ui-sans-serif, -apple-system, system-ui;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* ================================
+   Interactive Elements
+================================ */
+.hover-btn {
+    transition: background-color 0.3s ease;
+    border-radius: 0.4rem;
+    padding: 0.4rem 0.6rem;
+    border: none;
+}
+
+.hover-btn:hover {
+    background-color: rgba(93, 93, 93, 0.1);
+}
+
+.hover-row {
+    transition: background-color 0.3s ease;
+    border-radius: 0.4rem;
+    padding: 0.4rem;
+}
+
+.hover-row:hover {
+    background-color: rgba(93, 93, 93, 0.1);
+}
+
+/* ================================
+   Sidebar Navigation Styles
+================================ */
+.nav-section {
+    padding: 0.75rem 1rem;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    text-decoration: none;
+    color: #5D5D5D;
+    border-radius: 0.4rem;
+    transition: background-color 0.3s ease;
+}
+
+.nav-item:hover {
+    background-color: rgba(93, 93, 93, 0.1);
+    color: #5D5D5D;
+}
+
+.nav-item.active {
+    background-color: rgba(93, 93, 93, 0.15);
+    color: #333;
+}
+
+.nav-icon {
+    font-size: 1.1rem;
+    margin-right: 0.75rem;
+    color: #5D5D5D;
+}
+
+/* ================================
+   Profile Section
+================================ */
+.profile-section {
+    padding: 1rem;
+    border-top: 1px solid rgba(93, 93, 93, 0.1);
+}
+
+.profile-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    background: transparent;
+    border: none;
+    border-radius: 0.4rem;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.profile-button:hover {
+    background-color: rgba(93, 93, 93, 0.1);
+}
