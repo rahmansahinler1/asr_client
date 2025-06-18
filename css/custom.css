@@ -15,6 +15,7 @@
     width: 248px;
     height: 100vh;
     background-color: #F9F9F9;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
     z-index: 1000;
 }
 
