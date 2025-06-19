@@ -27,36 +27,61 @@
             <span class="logo-text">aisearchrefs</span>
           </button>
         </div>
-        <!-- Navigation Sections -->
+        <!-- Navigation Sections with Alpine.js reactivity -->
         <div class="flex-grow-1">
-          <!-- Overview Section -->
+          <!-- Analytics Section -->
           <div class="nav-section">
             <h6 class="section-title text mb-2">Analytics</h6>
-            <a href="#" class="nav-item" data-page="overview" @click.prevent="navigateTo('overview')">
+            
+            <a href="#" 
+               class="nav-item" 
+               :class="{ 'active': currentPage === 'overview' }"
+               @click.prevent="navigateTo('overview')">
               <i class="bi bi-graph-up nav-icon"></i>
               <span class="nav-text">Overview</span>
             </a>
-            <a href="#" class="nav-item" data-page="brand-visibility" @click.prevent="navigateTo('brand-visibility')">
-              <i class="bi bi-eye nav-icon"></i>
-              <span class="nav-text">Visibility</span>
+            
+            <a href="#" 
+               class="nav-item" 
+               :class="{ 'active': currentPage === 'reports' }"
+               @click.prevent="navigateTo('reports')">
+              <i class="bi bi-bar-chart nav-icon"></i>
+              <span class="nav-text">Reports</span>
             </a>
-            <a href="#" class="nav-item" data-page="reports" @click.prevent="navigateTo('reports')">
-                <i class="bi bi-bar-chart nav-icon"></i>
-                <span class="nav-text">Reports</span>
+            
+            <a href="#" 
+               class="nav-item" 
+               :class="{ 'active': currentPage === 'visibility' }"
+               @click.prevent="navigateTo('visibility')">
+              <i class="bi bi-eye nav-icon"></i>
+              <span class="nav-text">Brand Visibility</span>
             </a>
           </div>
+          
           <!-- Management Section -->
           <div class="nav-section">
             <h6 class="section-title text mb-2">Management</h6>
-            <a href="#" class="nav-item" data-page="brands" @click.prevent="navigateTo('brand')">
+            
+            <a href="#" 
+               class="nav-item" 
+               :class="{ 'active': currentPage === 'brands' }"
+               @click.prevent="navigateTo('brands')">
               <i class="bi bi-building nav-icon"></i>
-              <span class="nav-text">Brand</span>
+              <span class="nav-text">Brands</span>
             </a>
-            <a href="#" class="nav-item" data-page="competitors" @click.prevent="navigateTo('competitors')">
+            
+            <a href="#" 
+               class="nav-item" 
+               :class="{ 'active': currentPage === 'competitors' }"
+               @click.prevent="navigateTo('competitors')">
               <i class="bi bi-people nav-icon"></i>
               <span class="nav-text">Competitors</span>
             </a>
-            <a href="#" class="nav-item" data-page="settings" @click.prevent="navigateTo('settings')">
+            
+            <a href="#" 
+               class="nav-item" 
+               :class="{ 'active': currentPage === 'settings' }"
+               @click.prevent="navigateTo('settings')">
               <i class="bi bi-gear nav-icon"></i>
               <span class="nav-text">Settings</span>
             </a>
