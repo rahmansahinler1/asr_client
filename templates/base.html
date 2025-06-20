@@ -10,9 +10,15 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
     <!-- Codebase -->
     <link rel="stylesheet" href="/css/custom.css"/>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+    <script src="/js/init.js"></script>
     <script src="/js/router.js"></script>
     <script src="/js/api.js"></script>
     <script src="/js/overview.js"></script>
@@ -129,46 +135,79 @@
       <div class="app-content">
         <!-- Overview Page -->
         <div x-show="currentPage === 'overview'" x-data="overviewApp()" x-init="init()">
-            <div class="container-fluid">
-              <h1 class="dashboard-title mb-3">Overview</h1>
-              <p class="nav-text text-muted">AI visibility analytics overview</p>
-              
-              <!-- Page content will go here -->
-              <div class="row" x-show="!loading">
-                <div class="col-md-3">
-                  <div class="card">
-                    <div class="card-body text-center">
-                      <h5 class="card-title">Total Queries</h5>
-                      <h2 class="text-primary" x-text="stats.totalQueries"></h2>
-                    </div>
+          <div class="container-fluid">
+            <h1 class="dashboard-title mb-3">Overview</h1>
+            <p class="nav-text text-muted">AI visibility analytics overview</p>
+            
+            <!-- Loading state -->
+            <div x-show="loading" class="text-center py-5">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            
+            <!-- Page content -->
+            <div class="row" x-show="!loading">
+              <!-- AI SEO Score Card -->
+              <div class="col-md-3">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <h5 class="card-title">AI SEO Score</h5>
+                    <h2 class="text-primary" x-text="stats.aiSeoScore"></h2>
+                    <small class="text-muted">Out of 100</small>
                   </div>
                 </div>
-                <!-- More cards here -->
               </div>
               
-              <!-- Loading state -->
-              <div x-show="loading" class="text-center py-5">
-                <div class="spinner-border" role="status">
-                  <span class="visually-hidden">Loading...</span>
+              <!-- Brand Name Card -->
+              <div class="col-md-3">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <h5 class="card-title">Brand</h5>
+                    <h2 class="text-success" x-text="stats.brandName"></h2>
+                    <small class="text-muted">Active brand</small>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Total Queries Card -->
+              <div class="col-md-3">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <h5 class="card-title">Total Queries</h5>
+                    <h2 class="text-info" x-text="stats.totalQueries"></h2>
+                    <small class="text-muted">Analyzed</small>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Last Updated Card -->
+              <div class="col-md-3">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <h5 class="card-title">Last Updated</h5>
+                    <h2 class="text-warning" x-text="stats.lastUpdated"></h2>
+                    <small class="text-muted">Latest data</small>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          
-          <!-- Placeholder for other pages -->
-          <div x-show="currentPage === 'reports'">
-            <div class="container-fluid">
-              <h1 class="dashboard-title mb-3">Reports</h1>
-              <p class="nav-text text-muted">Reports page - Coming soon</p>
-            </div>
+        </div>
+        <!-- Reports page -->
+        <div x-show="currentPage === 'reports'">
+          <div class="container-fluid">
+            <h1 class="dashboard-title mb-3">Reports</h1>
+            <p class="nav-text text-muted">Reports page - Coming soon</p>
           </div>
-          
-          <div x-show="currentPage === 'settings'">
-            <div class="container-fluid">
-              <h1 class="dashboard-title mb-3">Settings</h1>
-              <p class="nav-text text-muted">Settings page - Coming soon</p>
-            </div>
+        </div>
+        <!-- Settings page -->
+        <div x-show="currentPage === 'settings'">
+          <div class="container-fluid">
+            <h1 class="dashboard-title mb-3">Settings</h1>
+            <p class="nav-text text-muted">Settings page - Coming soon</p>
           </div>
+        </div>
       </div>
     </div>
   </body>
