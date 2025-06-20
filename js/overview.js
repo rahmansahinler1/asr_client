@@ -4,12 +4,12 @@ function overviewApp() {
         // Page state
         loading: true,
         
-        // Static data (no API yet)
+        // Real data from stores
         stats: {
-            totalQueries: 0,
-            visibilityScore: 0,
-            brandMentions: 0,
-            competitorComparison: 0
+            aiSeoScore: 0,
+            brandName: '',
+            lastUpdated: '',
+            totalQueries: 0
         },
         
         // Component lifecycle
@@ -18,21 +18,41 @@ function overviewApp() {
             this.loadOverviewData();
         },
         
-        // Load page data (static for now)
+        // Load page data from Alpine stores
         loadOverviewData() {
-            // Simulate loading delay
-            setTimeout(() => {
-                // Static demo data
+            // Get data from Alpine stores
+            const userStore = this.$store.user;
+            const brandStore = this.$store.brand;
+            const overviewStore = this.$store.overview;
+            
+            // Check if data is available
+            if (userStore.isAuthenticated && overviewStore.ai_seo_score !== null) {
                 this.stats = {
-                    totalQueries: 1250,
-                    visibilityScore: 87,
-                    brandMentions: 45,
-                    competitorComparison: 23
+                    aiSeoScore: overviewStore.ai_seo_score,
+                    brandName: brandStore.name || 'Your Brand',
+                    lastUpdated: this.formatDate(overviewStore.created_at),
+                    totalQueries: 1 // Since we have one overview record
                 };
                 
                 this.loading = false;
-                console.log('📈 Overview data loaded');
-            }, 500);
+                console.log('📈 Overview data loaded - AI SEO Score:', this.stats.aiSeoScore);
+                
+            } else {
+                // If no data available, wait and try again
+                setTimeout(() => {
+                    this.loadOverviewData();
+                }, 100);
+            }
+        },
+        
+        // Format date helper
+        formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
         }
     }
 }
