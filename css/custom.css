@@ -175,3 +175,28 @@
 .profile-dropdown {
     max-width: 220px;
 }
+
+/* ================================
+   AI SEO Chart Styles
+================================ */
+.ai-seo-chart-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-center-score {
+    pointer-events: none;
+    z-index: 10;
+}
+
+.chart-center-score h2 {
+    font-family: ui-sans-serif, -apple-system, system-ui;
+    font-weight: 700;
+    line-height: 1;
+}
+
+#aiSeoChart {
+    max-width: 250px;
+    max-height: 250px;
+}

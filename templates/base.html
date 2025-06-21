@@ -10,18 +10,14 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
     <link rel="manifest" href="/favicon/site.webmanifest">
-    <!-- Codebase -->
+    <!-- Codebase CSS only -->
     <link rel="stylesheet" href="/css/custom.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
-    <script src="/js/init.js"></script>
-    <script src="/js/router.js"></script>
-    <script src="/js/api.js"></script>
-    <script src="/js/overview.js"></script>
   </head>
   <body>
     <!-- App Container -->
@@ -136,25 +132,51 @@
         <!-- Overview Page -->
         <div x-show="currentPage === 'overview'" x-data="overviewApp()" x-init="init()">
           <div class="container-fluid">
-            <h1 class="dashboard-title mb-3">Overview of <span x-text="stats.brandName"></span></h1>
+            <h1 class="dashboard-title mb-3">Overview of <span x-text="$store.brand.name || 'Your Brand'"></span></h1>
             <p class="nav-text text-muted">This page provides an overview of the brand's AI SEO score and other relevant metrics.</p>
             
-            <!-- Loading state -->
-            <div x-show="loading" class="text-center py-5">
+            <!-- Loading state - show only when no data is available -->
+            <div x-show="$store.overview.ai_seo_score === null" class="text-center py-5">
               <div class="spinner-border" role="status">
                 <span class="visually-hidden">Loading...</span>
               </div>
+              <p class="mt-2 text-muted">Loading dashboard data...</p>
             </div>
             
-            <!-- Page content -->
-            <div class="row" x-show="!loading">
-              <!-- AI SEO Score Card -->
-              <div class="col-md-3">
+            <!-- Page content - show when we have data -->
+            <div class="row" x-show="$store.overview.ai_seo_score !== null">
+              <!-- AI SEO Score Chart -->
+              <div class="col-md-6">
                 <div class="card">
-                  <div class="card-body text-center">
-                    <h5 class="card-title">AI SEO Score</h5>
-                    <h2 class="text-primary" x-text="stats.aiSeoScore"></h2>
-                    <small class="text-muted">Out of 100</small>
+                  <div class="card-body">
+                    <h5 class="card-title mb-4">AI SEO Score</h5>
+                    
+                    <!-- Chart Container -->
+                    <div class="ai-seo-chart-container position-relative d-flex justify-content-center align-items-center" style="height: 300px;">
+                      <!-- Chart Canvas with explicit dimensions -->
+                      <canvas x-ref="aiSeoCanvas" 
+                              width="250" 
+                              height="250"
+                              style="max-width: 250px; max-height: 250px; display: block;">
+                      </canvas>
+                      
+                      <!-- Center Score Display -->
+                      <div class="chart-center-score position-absolute top-50 start-50 translate-middle text-center">
+                        <h2 class="fw-bold mb-0" x-text="$store.overview.ai_seo_score" style="font-size: 3rem; color: #333;"></h2>
+                      </div>
+                    </div>
+                    
+                    <!-- Status Indicator -->
+                    <div class="text-center mt-3">
+                      <span class="badge px-3 py-2 fs-6" 
+                            :class="{
+                              'bg-success': $store.overview.ai_seo_score >= 80,
+                              'bg-warning': $store.overview.ai_seo_score >= 60 && $store.overview.ai_seo_score < 80,
+                              'bg-danger': $store.overview.ai_seo_score < 60
+                            }"
+                            x-text="getScoreStatus($store.overview.ai_seo_score)">
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -164,7 +186,7 @@
                 <div class="card">
                   <div class="card-body text-center">
                     <h5 class="card-title">Brand</h5>
-                    <h2 class="text-success" x-text="stats.brandName"></h2>
+                    <h2 class="text-success" x-text="$store.brand.name || 'Loading...'"></h2>
                     <small class="text-muted">Active brand</small>
                   </div>
                 </div>
@@ -175,19 +197,8 @@
                 <div class="card">
                   <div class="card-body text-center">
                     <h5 class="card-title">Total Queries</h5>
-                    <h2 class="text-info" x-text="stats.totalQueries"></h2>
+                    <h2 class="text-info">1</h2>
                     <small class="text-muted">Analyzed</small>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Last Updated Card -->
-              <div class="col-md-3">
-                <div class="card">
-                  <div class="card-body text-center">
-                    <h5 class="card-title">Last Updated</h5>
-                    <h2 class="text-warning" x-text="stats.lastUpdated"></h2>
-                    <small class="text-muted">Latest data</small>
                   </div>
                 </div>
               </div>
@@ -210,5 +221,13 @@
         </div>
       </div>
     </div>
+    
+    <!-- ================================
+         JAVASCRIPT FILES - LOADED AFTER DOM
+         ================================ -->
+    <script src="/js/init.js"></script>
+    <script src="/js/router.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/overview.js"></script>
   </body>
 </html>
