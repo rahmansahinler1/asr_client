@@ -136,8 +136,8 @@
         <!-- Overview Page -->
         <div x-show="currentPage === 'overview'" x-data="overviewApp()" x-init="init()">
           <div class="container-fluid">
-            <h1 class="dashboard-title mb-3">Overview</h1>
-            <p class="nav-text text-muted">AI visibility analytics overview</p>
+            <h1 class="dashboard-title mb-3">Overview of <span x-text="stats.brandName"></span></h1>
+            <p class="nav-text text-muted">This page provides an overview of the brand's AI SEO score and other relevant metrics.</p>
             
             <!-- Loading state -->
             <div x-show="loading" class="text-center py-5">

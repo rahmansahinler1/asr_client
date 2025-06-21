@@ -73,7 +73,7 @@ async function loadInitialUserData() {
             // 3. Update overview store with most recent data
             if (data.overview_data && Array.isArray(data.overview_data) && data.overview_data.length > 0) {
                 const overviewStore = Alpine.store('overview');
-                const latestOverview = data.overview_data[0]; // First item is most recent due to ORDER BY created_at DESC
+                const latestOverview = data.overview_data[0];
                 
                 overviewStore.id = latestOverview.overview_id;
                 overviewStore.created_at = latestOverview.created_at;
