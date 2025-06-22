@@ -16,8 +16,12 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
     <link rel="manifest" href="/favicon/site.webmanifest">
-    <!-- Codebase CSS only -->
+    <!-- Codebase -->
     <link rel="stylesheet" href="/css/custom.css"/>
+    <script src="/js/init.js"></script>
+    <script src="/js/router.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/overview.js"></script>
   </head>
   <body>
     <!-- App Container -->
@@ -130,11 +134,16 @@
       <!-- Main Content -->
       <div class="app-content">
         <!-- Overview Page -->
-        <div x-show="currentPage === 'overview'" x-data="overviewApp()" x-init="init()">
+        <div 
+          x-show="currentPage === 'overview'" 
+          x-data="overviewApp()" 
+          x-init="$watch('currentPage', value => { if(value === 'overview') { $nextTick(() => init()) } })"
+          @destroy="destroy()"
+          style="display: none;"
+          x-transition>
           <div class="container-fluid">
             <h1 class="dashboard-title mb-3">Overview of <span x-text="$store.brand.name || 'Your Brand'"></span></h1>
             <p class="nav-text text-muted">This page provides an overview of the brand's AI SEO score and other relevant metrics.</p>
-            
             <!-- Loading state - show only when no data is available -->
             <div x-show="$store.overview.ai_seo_score === null" class="text-center py-5">
               <div class="spinner-border" role="status">
@@ -142,30 +151,27 @@
               </div>
               <p class="mt-2 text-muted">Loading dashboard data...</p>
             </div>
-            
             <!-- Page content - show when we have data -->
-            <div class="row" x-show="$store.overview.ai_seo_score !== null">
+            <div class="row" x-show="$store.overview.ai_seo_score !== null" x-transition>
               <!-- AI SEO Score Chart -->
               <div class="col-md-6">
                 <div class="card">
                   <div class="card-body">
                     <h5 class="card-title mb-4">AI SEO Score</h5>
-                    
                     <!-- Chart Container -->
                     <div class="ai-seo-chart-container position-relative d-flex justify-content-center align-items-center" style="height: 300px;">
-                      <!-- Chart Canvas with explicit dimensions -->
+                      <!-- Chart Canvas with explicit dimensions and ID as fallback -->
                       <canvas x-ref="aiSeoCanvas" 
+                              id="aiSeoCanvas"
                               width="250" 
                               height="250"
                               style="max-width: 250px; max-height: 250px; display: block;">
                       </canvas>
-                      
                       <!-- Center Score Display -->
                       <div class="chart-center-score position-absolute top-50 start-50 translate-middle text-center">
                         <h2 class="fw-bold mb-0" x-text="$store.overview.ai_seo_score" style="font-size: 3rem; color: #333;"></h2>
                       </div>
                     </div>
-                    
                     <!-- Status Indicator -->
                     <div class="text-center mt-3">
                       <span class="badge px-3 py-2 fs-6" 
@@ -180,7 +186,6 @@
                   </div>
                 </div>
               </div>
-              
               <!-- Brand Name Card -->
               <div class="col-md-3">
                 <div class="card">
@@ -191,7 +196,6 @@
                   </div>
                 </div>
               </div>
-              
               <!-- Total Queries Card -->
               <div class="col-md-3">
                 <div class="card">
@@ -221,13 +225,5 @@
         </div>
       </div>
     </div>
-    
-    <!-- ================================
-         JAVASCRIPT FILES - LOADED AFTER DOM
-         ================================ -->
-    <script src="/js/init.js"></script>
-    <script src="/js/router.js"></script>
-    <script src="/js/api.js"></script>
-    <script src="/js/overview.js"></script>
   </body>
 </html>
