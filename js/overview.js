@@ -71,30 +71,59 @@ function overviewApp() {
                 }
             }
             
-            let scoreColor = '#dc3545'; // Red
-            if (score >= 80) scoreColor = '#198754'; // Green
-            else if (score >= 60) scoreColor = '#ffc107'; // Yellow
-            
             try {
                 const ctx = canvas.getContext('2d');
                 if (!ctx) {
                     console.error('❌ Could not get 2D context from canvas');
                     return;
                 }
+
+                const gradient = ctx.createLinearGradient(0, canvas.height, canvas.width, 0);
+                gradient.addColorStop(0, '#f8696b');
+                gradient.addColorStop(0.5, '#fddc5c');
+                gradient.addColorStop(1, '#94c45b');
+
+                const colors = [gradient, gradient, gradient, '#e9ecef'];
+
+                if (score <= 33) {
+                    data = [
+                        score,
+                        0,
+                        0,
+                        100 - score
+                    ];
+                } else if (score <= 66) {
+                    data = [
+                        33,
+                        score - 33,
+                        0,
+                        100 - score
+                    ];
+                } else {
+                    data = [
+                        33,
+                        33,
+                        score - 66,
+                        100 - score
+                    ];
+                }
                 
                 this.aiSeoChart.instance = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
                         datasets: [{
-                            data: [score, 100 - score],
-                            backgroundColor: [scoreColor, '#e9ecef'],
+                            data: data,
+                            backgroundColor: colors,
+                            borderColor: '#ffffff',
                             borderWidth: 0,
-                            cutout: '70%'
+                            cutout: '65%'
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        rotation: -135,
+                        circumference: 270,
                         plugins: {
                             legend: { display: false },
                             tooltip: { enabled: false }
@@ -102,7 +131,7 @@ function overviewApp() {
                         animation: {
                             animateRotate: true,
                             animateScale: false,
-                            duration: 1000
+                            duration: 1200
                         }
                     }
                 });
@@ -122,21 +151,14 @@ function overviewApp() {
                 return;
             }
             
-            const score = this.$store.overview.ai_seo_score;
-            
-            let scoreColor = '#dc3545'; // Red
-            if (score >= 80) scoreColor = '#198754'; // Green
-            else if (score >= 60) scoreColor = '#ffc107'; // Yellow
-            
-            this.aiSeoChart.instance.data.datasets[0].data = [score, 100 - score];
-            this.aiSeoChart.instance.data.datasets[0].backgroundColor[0] = scoreColor;
-            this.aiSeoChart.instance.update();
+            this.createAiSeoChart();
         },
         
         getScoreStatus(score) {
             if (score >= 80) return 'Excellent';
             if (score >= 60) return 'Good';
-            return 'Needs Improvement';
+            if (score >= 40) return 'Average';
+            return 'Poor';
         },
         
         destroy() {
