@@ -153,35 +153,41 @@
             </div>
             <!-- Page content - show when we have data -->
             <div class="row" x-show="$store.overview.ai_seo_score !== null" x-transition>
-              <!-- AI SEO Score Chart -->
+              <!-- AI SEO Score Card -->
               <div class="col-md-6">
                 <div class="card">
                   <div class="card-body">
-                    <h5 class="card-title mb-4">AI SEO Score</h5>
-                    <!-- Chart Container -->
-                    <div class="ai-seo-chart-container position-relative d-flex justify-content-center align-items-center" style="height: 300px;">
-                      <!-- Chart Canvas with explicit dimensions and ID as fallback -->
-                      <canvas x-ref="aiSeoCanvas" 
-                              id="aiSeoCanvas"
-                              width="250" 
-                              height="250"
-                              style="max-width: 250px; max-height: 250px; display: block;">
-                      </canvas>
-                      <!-- Center Score Display -->
-                      <div class="chart-center-score position-absolute top-50 start-50 translate-middle text-center">
-                        <h2 class="fw-bold mb-0" x-text="$store.overview.ai_seo_score" style="font-size: 3rem; color: #333;"></h2>
+                    <h5 class="section-title mb-4">AI SEO Score</h5>
+                    
+                    <!-- AI SEO Chart Wrapper - Left Aligned -->
+                    <div class="ai-seo-chart-wrapper">
+                      
+                      <!-- Chart Container with score overlay -->
+                      <div class="ai-seo-chart-container position-relative">
+                        <canvas x-ref="aiSeoCanvas" 
+                                id="aiSeoCanvas"
+                                width="250" 
+                                height="250">
+                        </canvas>
+                        <!-- Score overlay centered in chart -->
+                        <div class="ai-seo-score-overlay position-absolute start-50 translate-middle text-center" style="top: 55%;">
+                          <div class="ai-seo-score-number" x-text="$store.overview.ai_seo_score"></div>
+                        </div>
                       </div>
-                    </div>
-                    <!-- Status Indicator -->
-                    <div class="text-center mt-3">
-                      <span class="badge px-3 py-2 fs-6" 
-                            :class="{
-                              'bg-success': $store.overview.ai_seo_score >= 80,
-                              'bg-warning': $store.overview.ai_seo_score >= 60 && $store.overview.ai_seo_score < 80,
-                              'bg-danger': $store.overview.ai_seo_score < 60
-                            }"
-                            x-text="getScoreStatus($store.overview.ai_seo_score)">
-                      </span>
+                      
+                      <!-- Status Badge below chart -->
+                      <div class="ai-seo-status-container">
+                        <span class="ai-seo-status-badge" 
+                              :class="{
+                                'status-excellent': $store.overview.ai_seo_score >= 80,
+                                'status-good': $store.overview.ai_seo_score >= 60 && $store.overview.ai_seo_score < 80,
+                                'status-average': $store.overview.ai_seo_score >= 40 && $store.overview.ai_seo_score < 60,
+                                'status-poor': $store.overview.ai_seo_score < 40
+                              }"
+                              x-text="getScoreStatus($store.overview.ai_seo_score)">
+                        </span>
+                      </div>
+                      
                     </div>
                   </div>
                 </div>

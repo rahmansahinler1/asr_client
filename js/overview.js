@@ -1,157 +1,72 @@
 // Overview Page Component
 function overviewApp() {
     return {
-        aiSeoChart: {
-            instance: null,
-            initialized: false
-        },
+        chart: null,
+        
         init() {
-            // Visual check to initialize chart
-            this.$watch('$el.offsetParent', (visible) => {
-                if (visible && !this.aiSeoChart.initialized) {
-                    this.initializeChart();
-                }
-            });
-            // Data check to initialize chart
+            // Create chart when component initializes and data is available
+            if (this.$store.overview.ai_seo_score !== null) {
+                this.createChart();
+            }
+            
+            // Watch for data changes
             this.$watch('$store.overview.ai_seo_score', (score) => {
-                if (score !== null && this.$el.offsetParent) {
-                    this.initializeChart();
+                if (score !== null) {
+                    this.createChart();
                 }
             });
         },
         
-        initializeChart() {
-            if (this.aiSeoChart.initialized) {
-                this.updateChart();
-                return;
-            }
-            
+        createChart() {
             const score = this.$store.overview.ai_seo_score;
-            if (score === null) {
-                return;
+            if (score === null || typeof Chart === 'undefined') return;
+            
+            const canvas = this.$refs.aiSeoCanvas;
+            if (!canvas) return;
+            
+            // Clean up existing chart
+            if (this.chart) {
+                this.chart.destroy();
+                this.chart = null;
             }
             
-            if (typeof Chart === 'undefined') {
-                setTimeout(() => this.initializeChart(), 500);
-                return;
-            }
+            const ctx = canvas.getContext('2d');
             
-            requestAnimationFrame(() => {
-                this.createAiSeoChart();
-            });
-        },
-        
-        createAiSeoChart() {
-            const score = this.$store.overview.ai_seo_score;
+            // Create gradient
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            gradient.addColorStop(0, '#f8696b');    // Red
+            gradient.addColorStop(0.5, '#fddc5c');  // Yellow  
+            gradient.addColorStop(1, '#94c45b');    // Green
             
-            let canvas = this.$refs.aiSeoCanvas;
-            if (!canvas) {
-                canvas = this.$el.querySelector('canvas[x-ref="aiSeoCanvas"]');
-            }
+            // Chart data: score portion + remaining portion
+            const chartData = [score, 100 - score];
+            const chartColors = [gradient, '#e9ecef'];
             
-            if (!canvas) {
-                console.error('❌ Canvas element not found!');
-                return;
-            }
-            
-            const rect = canvas.getBoundingClientRect();
-            
-            if (rect.width === 0 || rect.height === 0) {
-                console.warn('⚠️ Canvas not visible, retrying...');
-                setTimeout(() => this.createAiSeoChart(), 200);
-                return;
-            }
-            
-            if (this.aiSeoChart.instance) {
-                try {
-                    this.aiSeoChart.instance.destroy();
-                    this.aiSeoChart.instance = null;
-                } catch (e) {
-                    console.warn('Chart destroy warning:', e.message);
-                }
-            }
-            
-            try {
-                const ctx = canvas.getContext('2d');
-                if (!ctx) {
-                    console.error('❌ Could not get 2D context from canvas');
-                    return;
-                }
-
-                const gradient = ctx.createLinearGradient(0, canvas.height, canvas.width, 0);
-                gradient.addColorStop(0, '#f8696b');
-                gradient.addColorStop(0.5, '#fddc5c');
-                gradient.addColorStop(1, '#94c45b');
-
-                const colors = [gradient, gradient, gradient, '#e9ecef'];
-
-                if (score <= 33) {
-                    data = [
-                        score,
-                        0,
-                        0,
-                        100 - score
-                    ];
-                } else if (score <= 66) {
-                    data = [
-                        33,
-                        score - 33,
-                        0,
-                        100 - score
-                    ];
-                } else {
-                    data = [
-                        33,
-                        33,
-                        score - 66,
-                        100 - score
-                    ];
-                }
-                
-                this.aiSeoChart.instance = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        datasets: [{
-                            data: data,
-                            backgroundColor: colors,
-                            borderColor: '#ffffff',
-                            borderWidth: 0,
-                            cutout: '65%'
-                        }]
+            this.chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: chartData,
+                        backgroundColor: chartColors,
+                        borderWidth: 4,
+                        cutout: '60%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    rotation: -135,       // Start position like before
+                    circumference: 270,   // 270 degrees like before
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        rotation: -135,
-                        circumference: 270,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: { enabled: false }
-                        },
-                        animation: {
-                            animateRotate: true,
-                            animateScale: false,
-                            duration: 1200
-                        }
+                    animation: {
+                        animateRotate: true,
+                        duration: 800
                     }
-                });
-                
-                this.aiSeoChart.initialized = true;
-                
-            } catch (error) {
-                console.error('❌ Chart creation error:', error);
-                console.error('Error stack:', error.stack);
-                this.aiSeoChart.initialized = false;
-            }
-        },
-        
-        updateChart() {
-            if (!this.aiSeoChart.instance) {
-                this.createAiSeoChart();
-                return;
-            }
-            
-            this.createAiSeoChart();
+                }
+            });
         },
         
         getScoreStatus(score) {
@@ -162,14 +77,9 @@ function overviewApp() {
         },
         
         destroy() {
-            if (this.aiSeoChart.instance) {
-                try {
-                    this.aiSeoChart.instance.destroy();
-                    this.aiSeoChart.instance = null;
-                    this.aiSeoChart.initialized = false;
-                } catch (e) {
-                    console.warn('Cleanup warning:', e.message);
-                }
+            if (this.chart) {
+                this.chart.destroy();
+                this.chart = null;
             }
         }
     }

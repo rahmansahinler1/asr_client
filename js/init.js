@@ -38,7 +38,7 @@ async function loadInitialUserData() {
         console.log('📡 Loading initial user data...');
         
         // Using sample user ID for MVP
-        const SAMPLE_USER_ID = "00000000-0000-0000-0000-000000000002";
+        const SAMPLE_USER_ID = "00000000-0000-0000-0000-000000000001";
         
         // Call existing API function
         const data = await window.fetchInitialData(SAMPLE_USER_ID);
