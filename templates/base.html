@@ -157,35 +157,54 @@
               <div class="col-md-6">
                 <div class="card">
                   <div class="card-body">
-                    <h5 class="section-title mb-4">AI SEO Score</h5>
+                    <!-- AI SEO Score Header with Change Indicator -->
+                    <div class="ai-seo-header mb-4">
+                      <h3 class="ai-seo-title">AI SEO Score</h3>
+                      <div class="ai-seo-change-container">
+                        <i class="bi bi-arrow-up-right ai-seo-change-icon text-success"></i>
+                        <span class="ai-seo-change nav-text text-muted">10% change from previous week</span>
+                      </div>
+                    </div>
                     
-                    <!-- AI SEO Chart Wrapper - Left Aligned -->
-                    <div class="ai-seo-chart-wrapper">
+                    <!-- AI SEO Chart Container with Description -->
+                    <div class="ai-seo-chart-layout">
                       
-                      <!-- Chart Container with score overlay -->
-                      <div class="ai-seo-chart-container position-relative">
-                        <canvas x-ref="aiSeoCanvas" 
-                                id="aiSeoCanvas"
-                                width="250" 
-                                height="250">
-                        </canvas>
-                        <!-- Score overlay centered in chart -->
-                        <div class="ai-seo-score-overlay position-absolute start-50 translate-middle text-center" style="top: 55%;">
-                          <div class="ai-seo-score-number" x-text="$store.overview.ai_seo_score"></div>
+                      <!-- Left Side: Chart and Badge -->
+                      <div class="ai-seo-chart-wrapper">
+                        
+                        <!-- Chart Container with score overlay -->
+                        <div class="ai-seo-chart-container position-relative">
+                          <canvas x-ref="aiSeoCanvas" 
+                                  id="aiSeoCanvas"
+                                  width="250" 
+                                  height="250">
+                          </canvas>
+                          <!-- Score overlay centered in chart -->
+                          <div class="ai-seo-score-overlay position-absolute start-50 translate-middle text-center" style="top: 55%;">
+                            <div class="ai-seo-score-number" x-text="$store.overview.ai_seo_score"></div>
+                          </div>
                         </div>
+                        
+                        <!-- Status Badge below chart -->
+                        <div class="ai-seo-status-container">
+                          <span class="ai-seo-status-badge" 
+                                :class="{
+                                  'status-excellent': $store.overview.ai_seo_score >= 80,
+                                  'status-good': $store.overview.ai_seo_score >= 60 && $store.overview.ai_seo_score < 80,
+                                  'status-average': $store.overview.ai_seo_score >= 40 && $store.overview.ai_seo_score < 60,
+                                  'status-poor': $store.overview.ai_seo_score < 40
+                                }"
+                                x-text="getScoreStatus($store.overview.ai_seo_score)">
+                          </span>
+                        </div>
+                        
                       </div>
                       
-                      <!-- Status Badge below chart -->
-                      <div class="ai-seo-status-container">
-                        <span class="ai-seo-status-badge" 
-                              :class="{
-                                'status-excellent': $store.overview.ai_seo_score >= 80,
-                                'status-good': $store.overview.ai_seo_score >= 60 && $store.overview.ai_seo_score < 80,
-                                'status-average': $store.overview.ai_seo_score >= 40 && $store.overview.ai_seo_score < 60,
-                                'status-poor': $store.overview.ai_seo_score < 40
-                              }"
-                              x-text="getScoreStatus($store.overview.ai_seo_score)">
-                        </span>
+                      <!-- Right Side: Description Text -->
+                      <div class="ai-seo-description">
+                        <p class="nav-text text-muted mb-0">
+                          This number estimates the strength of your website's content on a 100-point scale. It considers the proportion of content that performs well as compared to content that needs to be updated or removed.
+                        </p>
                       </div>
                       
                     </div>
