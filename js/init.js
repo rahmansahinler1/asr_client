@@ -23,7 +23,8 @@ document.addEventListener('alpine:init', () => {
     Alpine.store('overview', {
         id: null,
         created_at: null,
-        ai_seo_score: null
+        ai_seo_score: null,
+        score_change_percent: null
     });
     
     console.log('✅ Application stores initialized');
@@ -38,7 +39,7 @@ async function loadInitialUserData() {
         console.log('📡 Loading initial user data...');
         
         // Using sample user ID for MVP
-        const SAMPLE_USER_ID = "00000000-0000-0000-0000-000000000001";
+        const SAMPLE_USER_ID = "00000000-0000-0000-0000-000000000004";
         
         // Call existing API function
         const data = await window.fetchInitialData(SAMPLE_USER_ID);
@@ -78,8 +79,12 @@ async function loadInitialUserData() {
                 overviewStore.id = latestOverview.overview_id;
                 overviewStore.created_at = latestOverview.created_at;
                 overviewStore.ai_seo_score = latestOverview.ai_seo_score;
+                overviewStore.score_change_percent = latestOverview.score_change_percent;
                 
                 console.log('📊 Overview loaded - AI SEO Score:', latestOverview.ai_seo_score);
+                if (latestOverview.score_change_percent !== 0) {
+                    console.log('📈 Score Change:', latestOverview.score_change_percent + '%');
+                }
             }
             
             console.log('✅ All initial data loaded successfully');

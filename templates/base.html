@@ -160,9 +160,19 @@
                     <!-- AI SEO Score Header with Change Indicator -->
                     <div class="ai-seo-header mb-4">
                       <h3 class="ai-seo-title">AI SEO Score</h3>
-                      <div class="ai-seo-change-container">
-                        <i class="bi bi-arrow-up-right ai-seo-change-icon text-success"></i>
-                        <span class="ai-seo-change nav-text text-muted">10% change from previous week</span>
+                      <div class="ai-seo-change-container" x-show="$store.overview.score_change_percent !== null">
+                        <i class="bi ai-seo-change-icon"
+                           :class="{
+                             'bi-arrow-up-right text-success': $store.overview.score_change_percent > 0,
+                             'bi-arrow-down-right text-danger': $store.overview.score_change_percent < 0 && $store.overview.score_change_percent !== -101,
+                             'bi-dash text-warning': $store.overview.score_change_percent === 0 || $store.overview.score_change_percent === -101
+                           }"></i>
+                        <span class="ai-seo-change nav-text text-muted" 
+                              x-text="
+                                $store.overview.score_change_percent === -101 ? 'Not enough data collected' :
+                                $store.overview.score_change_percent === 0 ? 'Score remained the same' :
+                                Math.abs($store.overview.score_change_percent) + '% change from previous period'
+                              "></span>
                       </div>
                     </div>
                     
