@@ -24,7 +24,7 @@ document.addEventListener('alpine:init', () => {
         id: null,
         created_at: null,
         ai_seo_score: null,
-        score_change_percent: null,
+        aiseo_score_change_percent: null,
         ai_crawlability: {
             page_counts: {
                 well_performing: null,
@@ -48,7 +48,7 @@ async function loadInitialUserData() {
         console.log('📡 Loading initial user data...');
         
         // Using sample user ID for MVP
-        const SAMPLE_USER_ID = "00000000-0000-0000-0000-000000000003";
+        const SAMPLE_USER_ID = "00000000-0000-0000-0000-000000000001";
         
         // Call existing API function
         const data = await window.fetchInitialData(SAMPLE_USER_ID);
@@ -88,18 +88,20 @@ async function loadInitialUserData() {
                 overviewStore.id = latestOverview.overview_id;
                 overviewStore.created_at = latestOverview.created_at;
                 overviewStore.ai_seo_score = latestOverview.ai_seo_score;
-                overviewStore.score_change_percent = latestOverview.score_change_percent;
+                overviewStore.aiseo_score_change_percent = latestOverview.aiseo_score_change_percent;
                 
-                // Mock data for AI Crawlability (TODO: Replace with backend data)
-                overviewStore.ai_crawlability.page_counts.well_performing = 150;
-                overviewStore.ai_crawlability.page_counts.underperforming = 45;
-                overviewStore.ai_crawlability.page_counts.deadweight = 20;
-                overviewStore.ai_crawlability.page_counts.excluded = 10;
-                overviewStore.ai_crawlability.well_performing_change = 10;
+                // Map crawlability data from backend array [well, under, dead, excluded]
+                if (latestOverview.crawlability_score && Array.isArray(latestOverview.crawlability_score)) {
+                    overviewStore.ai_crawlability.page_counts.well_performing = latestOverview.crawlability_score[0];
+                    overviewStore.ai_crawlability.page_counts.underperforming = latestOverview.crawlability_score[1];
+                    overviewStore.ai_crawlability.page_counts.deadweight = latestOverview.crawlability_score[2];
+                    overviewStore.ai_crawlability.page_counts.excluded = latestOverview.crawlability_score[3];
+                    overviewStore.ai_crawlability.well_performing_change = latestOverview.crawlability_score_change_amount;
+                }
                 
                 console.log('📊 Overview loaded - AI SEO Score:', latestOverview.ai_seo_score);
-                if (latestOverview.score_change_percent !== 0) {
-                    console.log('📈 Score Change:', latestOverview.score_change_percent + '%');
+                if (latestOverview.aiseo_score_change_percent !== 0) {
+                    console.log('📈 AI SEO Change:', latestOverview.aiseo_score_change_percent + '%');
                 }
                 console.log('📄 Crawlability Pages - Well:', overviewStore.ai_crawlability.page_counts.well_performing, 'Change:', overviewStore.ai_crawlability.well_performing_change);
             }

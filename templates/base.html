@@ -160,18 +160,18 @@
                     <!-- AI SEO Score Header with Change Indicator -->
                     <div class="ai-seo-header mb-4">
                       <h3 class="ai-seo-title">AI SEO Score</h3>
-                      <div class="ai-seo-change-container" x-show="$store.overview.score_change_percent !== null">
+                      <div class="ai-seo-change-container" x-show="$store.overview.aiseo_score_change_percent !== null">
                         <i class="bi ai-seo-change-icon"
                            :class="{
-                             'bi-arrow-up-right text-success': $store.overview.score_change_percent > 0,
-                             'bi-arrow-down-right text-danger': $store.overview.score_change_percent < 0 && $store.overview.score_change_percent !== -101,
-                             'bi-dash text-warning': $store.overview.score_change_percent === 0 || $store.overview.score_change_percent === -101
+                             'bi-arrow-up-right text-success': $store.overview.aiseo_score_change_percent > 0,
+                             'bi-arrow-down-right text-danger': $store.overview.aiseo_score_change_percent < 0 && $store.overview.aiseo_score_change_percent !== -101,
+                             'bi-dash text-warning': $store.overview.aiseo_score_change_percent === 0 || $store.overview.aiseo_score_change_percent === -101
                            }"></i>
                         <span class="ai-seo-change nav-text text-muted" 
                               x-text="
-                                $store.overview.score_change_percent === -101 ? 'Not enough data collected' :
-                                $store.overview.score_change_percent === 0 ? 'Score remained the same' :
-                                Math.abs($store.overview.score_change_percent) + '% change from previous week'
+                                $store.overview.aiseo_score_change_percent === -101 ? 'Not enough data collected' :
+                                $store.overview.aiseo_score_change_percent === 0 ? 'Score remained the same' :
+                                Math.abs($store.overview.aiseo_score_change_percent) + '% change from previous week'
                               "></span>
                       </div>
                     </div>
@@ -239,8 +239,10 @@
                         <span class="ai-seo-change nav-text text-muted" 
                               x-text="
                                 $store.overview.ai_crawlability.well_performing_change === -101 ? 'Not enough data collected' :
-                                $store.overview.ai_crawlability.well_performing_change === 0 ? 'Pages remained the same' :
-                                Math.abs($store.overview.ai_crawlability.well_performing_change) + ' pages well performed from previous week'
+                                $store.overview.ai_crawlability.well_performing_change === 0 ? 'Well performed pages remained same from previous week' :
+                                $store.overview.ai_crawlability.well_performing_change > 0 ? 
+                                  Math.abs($store.overview.ai_crawlability.well_performing_change) + ' pages added well performed from previous week' :
+                                  Math.abs($store.overview.ai_crawlability.well_performing_change) + ' pages dropped well performed from previous week'
                               "></span>
                       </div>
                     </div>
