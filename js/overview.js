@@ -2,22 +2,35 @@
 function overviewApp() {
     return {
         chart: null,
+        crawlabilityChart: null,
         
         init() {
-            // Create chart when component initializes and data is available
+            // Create charts when component initializes and data is available
             if (this.$store.overview.ai_seo_score !== null) {
-                this.createChart();
+                this.createAISEOChart();
+            }
+            
+            if (this.$store.overview.ai_crawlability.page_counts.well_performing !== null) {
+                this.createCrawlabilityChart();
             }
             
             // Watch for data changes
             this.$watch('$store.overview.ai_seo_score', (score) => {
                 if (score !== null) {
-                    this.createChart();
+                    this.createAISEOChart();
                 }
             });
+            
+            this.$watch('$store.overview.ai_crawlability.page_counts', (pageData) => {
+                if (pageData && pageData.well_performing !== null) {
+                    this.$nextTick(() => {
+                        this.createCrawlabilityChart();
+                    });
+                }
+            }, { deep: true });
         },
         
-        createChart() {
+        createAISEOChart() {
             const score = this.$store.overview.ai_seo_score;
             if (score === null || typeof Chart === 'undefined') return;
             
@@ -76,10 +89,76 @@ function overviewApp() {
             return 'Poor';
         },
         
+        createCrawlabilityChart() {
+            const pageData = this.$store.overview.ai_crawlability.page_counts;
+            if (!pageData.well_performing || typeof Chart === 'undefined') return;
+            
+            const canvas = this.$refs.aiCrawlabilityCanvas;
+            if (!canvas) return;
+            
+            // Clean up existing chart
+            if (this.crawlabilityChart) {
+                this.crawlabilityChart.destroy();
+                this.crawlabilityChart = null;
+            }
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Chart data: page counts for each category
+            const chartData = [
+                pageData.well_performing,
+                pageData.underperforming,
+                pageData.deadweight,
+                pageData.excluded
+            ];
+            
+            const chartColors = [
+                '#94c45b',  // Green - Well performing
+                '#fddc5c',  // Yellow - Underperforming  
+                '#f8696b',  // Red - Deadweight
+                '#e9ecef'   // Gray - Excluded
+            ];
+            
+            this.crawlabilityChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Well performing', 'Underperforming', 'Deadweight', 'Excluded'],
+                    datasets: [{
+                        data: chartData,
+                        backgroundColor: chartColors,
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }, // We have custom legend
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.raw + ' pages';
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        duration: 800
+                    }
+                }
+            });
+        },
+        
         destroy() {
             if (this.chart) {
                 this.chart.destroy();
                 this.chart = null;
+            }
+            if (this.crawlabilityChart) {
+                this.crawlabilityChart.destroy();
+                this.crawlabilityChart = null;
             }
         }
     }

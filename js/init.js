@@ -24,7 +24,16 @@ document.addEventListener('alpine:init', () => {
         id: null,
         created_at: null,
         ai_seo_score: null,
-        score_change_percent: null
+        score_change_percent: null,
+        ai_crawlability: {
+            page_counts: {
+                well_performing: null,
+                underperforming: null,
+                deadweight: null,
+                excluded: null
+            },
+            well_performing_change: null
+        }
     });
     
     console.log('✅ Application stores initialized');
@@ -81,10 +90,18 @@ async function loadInitialUserData() {
                 overviewStore.ai_seo_score = latestOverview.ai_seo_score;
                 overviewStore.score_change_percent = latestOverview.score_change_percent;
                 
+                // Mock data for AI Crawlability (TODO: Replace with backend data)
+                overviewStore.ai_crawlability.page_counts.well_performing = 150;
+                overviewStore.ai_crawlability.page_counts.underperforming = 45;
+                overviewStore.ai_crawlability.page_counts.deadweight = 20;
+                overviewStore.ai_crawlability.page_counts.excluded = 10;
+                overviewStore.ai_crawlability.well_performing_change = 10;
+                
                 console.log('📊 Overview loaded - AI SEO Score:', latestOverview.ai_seo_score);
                 if (latestOverview.score_change_percent !== 0) {
                     console.log('📈 Score Change:', latestOverview.score_change_percent + '%');
                 }
+                console.log('📄 Crawlability Pages - Well:', overviewStore.ai_crawlability.page_counts.well_performing, 'Change:', overviewStore.ai_crawlability.well_performing_change);
             }
             
             console.log('✅ All initial data loaded successfully');
