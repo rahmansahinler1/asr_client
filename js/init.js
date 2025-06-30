@@ -33,6 +33,11 @@ document.addEventListener('alpine:init', () => {
                 excluded: null
             },
             well_performing_change: null
+        },
+        total_mentions: {
+            link_mentions: null,
+            reference_mentions: null,
+            total_mention_change: null
         }
     });
     
@@ -48,7 +53,7 @@ async function loadInitialUserData() {
         console.log('📡 Loading initial user data...');
         
         // Using sample user ID for MVP
-        const SAMPLE_USER_ID = "00000000-0000-0000-0000-000000000001";
+        const SAMPLE_USER_ID = "00000000-0000-0000-0000-000000000003";
         
         // Call existing API function
         const data = await window.fetchInitialData(SAMPLE_USER_ID);
@@ -74,14 +79,14 @@ async function loadInitialUserData() {
                 brandStore.id = data.brand_info.brand_id;
                 brandStore.name = data.brand_info.brand_name;
                 brandStore.domain = data.brand_info.domain;
-                brandStore.niches = data.brand_info.brand_niche;
+                brandStore.niches = data.brand_info.brand_niches;
                 brandStore.last_update = data.brand_info.last_update;
                 
                 console.log('🏢 Brand loaded:', data.brand_info.brand_name);
             }
             
             // 3. Update overview store with most recent data
-            if (data.overview_data && Array.isArray(data.overview_data) && data.overview_data.length > 0) {
+            if (data.overview_data) {
                 const overviewStore = Alpine.store('overview');
                 const latestOverview = data.overview_data[0];
                 
@@ -91,7 +96,7 @@ async function loadInitialUserData() {
                 overviewStore.aiseo_score_change_percent = latestOverview.aiseo_score_change_percent;
                 
                 // Map crawlability data from backend array [well, under, dead, excluded]
-                if (latestOverview.crawlability_score && Array.isArray(latestOverview.crawlability_score)) {
+                if (latestOverview.crawlability_score) {
                     overviewStore.ai_crawlability.page_counts.well_performing = latestOverview.crawlability_score[0];
                     overviewStore.ai_crawlability.page_counts.underperforming = latestOverview.crawlability_score[1];
                     overviewStore.ai_crawlability.page_counts.deadweight = latestOverview.crawlability_score[2];
@@ -99,11 +104,11 @@ async function loadInitialUserData() {
                     overviewStore.ai_crawlability.well_performing_change = latestOverview.crawlability_score_change_amount;
                 }
                 
-                console.log('📊 Overview loaded - AI SEO Score:', latestOverview.ai_seo_score);
-                if (latestOverview.aiseo_score_change_percent !== 0) {
-                    console.log('📈 AI SEO Change:', latestOverview.aiseo_score_change_percent + '%');
+                if (latestOverview.total_reference_mention && latestOverview.total_link_mention) {
+                    overviewStore.total_mentions.reference_mentions = latestOverview.total_reference_mention;
+                    overviewStore.total_mentions.link_mentions = latestOverview.total_link_mention;
+                    overviewStore.total_mentions.total_mention_change = latestOverview.total_mention_change;
                 }
-                console.log('📄 Crawlability Pages - Well:', overviewStore.ai_crawlability.page_counts.well_performing, 'Change:', overviewStore.ai_crawlability.well_performing_change);
             }
             
             console.log('✅ All initial data loaded successfully');
