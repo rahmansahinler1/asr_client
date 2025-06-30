@@ -3,21 +3,20 @@ function overviewApp() {
     return {
         chart: null,
         crawlabilityChart: null,
+        totalMentionsChart: null,
         
         init() {
-            // Create charts when component initializes and data is available
-            if (this.$store.overview.ai_seo_score !== null) {
-                this.createAISEOChart();
-            }
-            
-            if (this.$store.overview.ai_crawlability.page_counts.well_performing !== null) {
-                this.createCrawlabilityChart();
-            }
+            // Use $nextTick to ensure DOM is ready before creating charts
+            this.$nextTick(() => {
+                this.initializeCharts();
+            });
             
             // Watch for data changes
             this.$watch('$store.overview.ai_seo_score', (score) => {
                 if (score !== null) {
-                    this.createAISEOChart();
+                    this.$nextTick(() => {
+                        this.createAISEOChart();
+                    });
                 }
             });
             
@@ -28,6 +27,34 @@ function overviewApp() {
                     });
                 }
             }, { deep: true });
+            
+            // Single watcher for total mentions chart - watches both dependencies
+            this.$watch(() => ({
+                linkMentions: this.$store.overview.total_mentions.link_mentions,
+                niches: this.$store.brand.niches
+            }), (newVal) => {
+                if (newVal.linkMentions !== null && newVal.niches && newVal.niches.length > 0) {
+                    this.$nextTick(() => {
+                        this.createTotalMentionsChart();
+                    });
+                }
+            }, { deep: true });
+        },
+        
+        initializeCharts() {
+            // Create charts when component initializes and data is available
+            if (this.$store.overview.ai_seo_score !== null) {
+                this.createAISEOChart();
+            }
+            
+            if (this.$store.overview.ai_crawlability.page_counts.well_performing !== null) {
+                this.createCrawlabilityChart();
+            }
+            
+            if (this.$store.overview.total_mentions.link_mentions !== null && 
+                this.$store.brand.niches && this.$store.brand.niches.length > 0) {
+                this.createTotalMentionsChart();
+            }
         },
         
         createAISEOChart() {
@@ -35,7 +62,10 @@ function overviewApp() {
             if (score === null || typeof Chart === 'undefined') return;
             
             const canvas = this.$refs.aiSeoCanvas;
-            if (!canvas) return;
+            if (!canvas) {
+                console.warn('AI SEO Canvas not available yet');
+                return;
+            }
             
             // Clean up existing chart
             if (this.chart) {
@@ -94,7 +124,10 @@ function overviewApp() {
             if (!pageData.well_performing || typeof Chart === 'undefined') return;
             
             const canvas = this.$refs.aiCrawlabilityCanvas;
-            if (!canvas) return;
+            if (!canvas) {
+                console.warn('AI Crawlability Canvas not available yet');
+                return;
+            }
             
             // Clean up existing chart
             if (this.crawlabilityChart) {
@@ -151,6 +184,110 @@ function overviewApp() {
             });
         },
         
+        createTotalMentionsChart() {
+            const linkMentions = this.$store.overview.total_mentions.link_mentions;
+            const referenceMentions = this.$store.overview.total_mentions.reference_mentions;
+            const niches = this.$store.brand.niches;
+            
+            if (!linkMentions || !referenceMentions || !niches || typeof Chart === 'undefined') return;
+            
+            // Ensure data arrays match niches length
+            if (linkMentions.length !== niches.length || referenceMentions.length !== niches.length) {
+                console.warn('Total mentions data length does not match niches length');
+                return;
+            }
+            
+            const canvas = this.$refs.totalMentionsCanvas;
+            if (!canvas) {
+                console.warn('Total Mentions Canvas not available yet');
+                return;
+            }
+            
+            // Clean up existing chart
+            if (this.totalMentionsChart) {
+                this.totalMentionsChart.destroy();
+                this.totalMentionsChart = null;
+            }
+            
+            const ctx = canvas.getContext('2d');
+            
+            this.totalMentionsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: niches,
+                    datasets: [
+                        {
+                            label: 'Link Mentions',
+                            data: linkMentions,
+                            backgroundColor: '#fddc5c',
+                            borderColor: '#fddc5c',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Reference Mentions',
+                            data: referenceMentions,
+                            backgroundColor: '#f4a261',
+                            borderColor: '#f4a261',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    categoryPercentage: 0.8,
+                    barPercentage: 0.6,
+                    scales: {
+                        x: {
+                            stacked: true,
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e9ecef'
+                            },
+                            ticks: {
+                                stepSize: 1,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false // We have custom legend
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].label;
+                                },
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 800,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        },
+        
         destroy() {
             if (this.chart) {
                 this.chart.destroy();
@@ -159,6 +296,10 @@ function overviewApp() {
             if (this.crawlabilityChart) {
                 this.crawlabilityChart.destroy();
                 this.crawlabilityChart = null;
+            }
+            if (this.totalMentionsChart) {
+                this.totalMentionsChart.destroy();
+                this.totalMentionsChart = null;
             }
         }
     }

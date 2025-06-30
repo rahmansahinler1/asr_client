@@ -154,8 +154,8 @@
             <!-- Page content - show when we have data -->
             <div class="row" x-show="$store.overview.ai_seo_score !== null" x-transition>
               <!-- AI SEO Score Card -->
-              <div class="col-md-6">
-                <div class="card">
+              <div class="col-md-6 mb-4">
+                <div class="card h-100">
                   <div class="card-body">
                     <!-- AI SEO Score Header with Change Indicator -->
                     <div class="ai-seo-header mb-4">
@@ -223,8 +223,8 @@
               </div>
               
               <!-- AI Crawlability Score Card -->
-              <div class="col-md-6">
-                <div class="card">
+              <div class="col-md-6 mb-4">
+                <div class="card h-100">
                   <div class="card-body">
                     <!-- AI Crawlability Score Header with Change Indicator -->
                     <div class="ai-seo-header mb-4">
@@ -308,24 +308,65 @@
                   </div>
                 </div>
               </div>
-              
-              <!-- Brand Name Card -->
-              <div class="col-md-3">
+            </div>
+            
+            <!-- Total Mentions Chart Row -->
+            <div class="row" x-show="$store.overview.total_mentions.link_mentions !== null" x-transition>
+              <div class="col-12">
                 <div class="card">
-                  <div class="card-body text-center">
-                    <h5 class="card-title">Brand</h5>
-                    <h2 class="text-success" x-text="$store.brand.name || 'Loading...'"></h2>
-                    <small class="text-muted">Active brand</small>
-                  </div>
-                </div>
-              </div>
-              <!-- Total Queries Card -->
-              <div class="col-md-3">
-                <div class="card">
-                  <div class="card-body text-center">
-                    <h5 class="card-title">Total Queries</h5>
-                    <h2 class="text-info">1</h2>
-                    <small class="text-muted">Analyzed</small>
+                  <div class="card-body">
+                    <!-- Total Mentions Header with Change Indicator -->
+                    <div class="ai-seo-header mb-4">
+                      <h3 class="ai-seo-title">Total Mentions</h3>
+                      <div class="ai-seo-change-container" x-show="$store.overview.total_mentions.total_mention_change !== null">
+                        <i class="bi ai-seo-change-icon"
+                           :class="{
+                             'bi-arrow-up-right text-success': $store.overview.total_mentions.total_mention_change > 0,
+                             'bi-arrow-down-right text-danger': $store.overview.total_mentions.total_mention_change < 0 && $store.overview.total_mentions.total_mention_change !== -101,
+                             'bi-dash text-warning': $store.overview.total_mentions.total_mention_change === 0 || $store.overview.total_mentions.total_mention_change === -101
+                           }"></i>
+                        <span class="ai-seo-change nav-text text-muted" 
+                              x-text="
+                                $store.overview.total_mentions.total_mention_change === -101 ? 'Not enough data collected' :
+                                $store.overview.total_mentions.total_mention_change === 0 ? 'Mentions remained the same' :
+                                Math.abs($store.overview.total_mentions.total_mention_change) + ' mention from previous week'
+                              "></span>
+                      </div>
+                    </div>
+                    
+                    <!-- Total Mentions Chart Container -->
+                    <div class="total-mentions-layout">
+                      
+                      <!-- Left Side: Chart -->
+                      <div class="total-mentions-chart-wrapper">
+                        <div class="total-mentions-chart-container position-relative">
+                          <canvas x-ref="totalMentionsCanvas" 
+                                  id="totalMentionsCanvas">
+                          </canvas>
+                        </div>
+                      </div>
+                      
+                      <!-- Right Side: Legend -->
+                      <div class="total-mentions-legend-container">
+                        <div class="mentions-legend">
+                          <div class="legend-item d-flex align-items-center mb-2">
+                            <div class="legend-color" style="background-color: #f4a261; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px;"></div>
+                            <span class="nav-text text-muted">Reference Mentions</span>
+                          </div>
+                          <div class="legend-item d-flex align-items-center mb-2">
+                            <div class="legend-color" style="background-color: #fddc5c; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px;"></div>
+                            <span class="nav-text text-muted">Link Mentions</span>
+                          </div>
+                          <div class="legend-item d-flex align-items-center mb-2">
+                            <span class="nav-text text-muted" style="font-weight: 600;">
+                              <span x-text="($store.overview.total_mentions.link_mentions || []).reduce((sum, val) => sum + val, 0) + ($store.overview.total_mentions.reference_mentions || []).reduce((sum, val) => sum + val, 0)"></span>
+                              total mentions
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                    </div>
                   </div>
                 </div>
               </div>
